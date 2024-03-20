@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt.guard';
 import { TransformInterceptor } from './core/transform.interceptor';
 
@@ -51,6 +51,13 @@ async function bootstrap() { //bootstrap: khởi động
   //   // Pass to next layer of middleware
   //   next();
   // });
+
+  //config version api
+  app.setGlobalPrefix('api');//// replace default prefix: 'v' => api/v
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: ['1', '2']
+  });
 
   //await app.listen(process.env.PORT);
   await app.listen(configService.get('PORT')); //or  configService.get<string>('PORT')
