@@ -1,3 +1,5 @@
+//this class use to decode token (to validate token)
+
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
@@ -16,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: IUser) {
+    async validate(payload: IUser) { //validate: this is keyword of 'PassportStrategy' 
         const { _id, name, email, role } = payload;
         return {
             _id,

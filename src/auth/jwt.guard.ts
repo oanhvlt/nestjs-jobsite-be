@@ -1,3 +1,5 @@
+//validate authentication by token
+
 import {
     ExecutionContext,
     Injectable,

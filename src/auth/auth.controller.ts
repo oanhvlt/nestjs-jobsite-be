@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Post, Render, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local.guard';
-import { Public, ResponseMessage } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { Response } from 'express';
+import { IUser } from 'src/users/users.interface';
 
 
 
@@ -13,6 +14,7 @@ export class AuthController {
         private authService: AuthService
     ) { }
 
+    //return token when user login, http://localhost:8000/api/v1/auth/login
 
     @Public() // define at customize.ts to ignore JWT
     @UseGuards(LocalAuthGuard)  //Passport Guard: https://docs.nestjs.com/recipes/passport
@@ -22,11 +24,19 @@ export class AuthController {
         return this.authService.login(req.user, res);
     }
 
+    //Register account public: ko cần truyền token
     @Public()
     @ResponseMessage('Register a new user')
     @Post('register')
     handleRegister(@Body() registerUserDto: RegisterUserDto) {
         return this.authService.register(registerUserDto);
+    }
+
+    //api Get Account (F5 Refresh at client) : http://localhost:8000/api/v1/auth/account
+    @ResponseMessage('Get user information')
+    @Get('account')
+    handleGetAccount(@User() user: IUser) { //req.user
+        return { user }
     }
 
 
