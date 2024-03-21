@@ -6,6 +6,8 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt.guard';
 import { TransformInterceptor } from './core/transform.interceptor';
+import cookieParser from 'cookie-parser';
+
 
 async function bootstrap() { //bootstrap: khởi động
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -17,6 +19,7 @@ async function bootstrap() { //bootstrap: khởi động
   //use Interceptor global: transform data trước khi trả về client
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
 
+
   app.useStaticAssets(join(__dirname, '..', 'public')); //js, css, image
   app.setBaseViewsDir(join(__dirname, '..', 'views')); //view
   //app.setBaseViewsDir(join(__dirname, '..', "./src/views"));
@@ -25,6 +28,8 @@ async function bootstrap() { //bootstrap: khởi động
   //before run app, call validation
   app.useGlobalPipes(new ValidationPipe());
 
+  // config cookies
+  app.use(cookieParser());
 
   //config cors
   app.enableCors({

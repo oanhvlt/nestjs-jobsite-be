@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Post, Render, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Render, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local.guard';
 import { Public, ResponseMessage } from 'src/decorator/customize';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
+import { Response } from 'express';
+
 
 
 @Controller('auth') // route /auth
@@ -16,8 +18,8 @@ export class AuthController {
     @UseGuards(LocalAuthGuard)  //Passport Guard: https://docs.nestjs.com/recipes/passport
     @ResponseMessage('User Login')
     @Post('login')
-    handleLogin(@Request() req) {
-        return this.authService.login(req.user);
+    handleLogin(@Req() req, @Res({ passthrough: true }) res: Response) {
+        return this.authService.login(req.user, res);
     }
 
     @Public()
