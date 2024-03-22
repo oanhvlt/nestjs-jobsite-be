@@ -31,8 +31,9 @@ export class CompaniesService {
 
     const { filter, sort, projection, population } = aqp(qs);
 
-    delete filter.page;
-    delete filter.limit;
+    //params in query string (companies.controller,ts >> findAll )
+    delete filter.current;
+    delete filter.pageSize;
 
     let offset = (currentPage - 1) * (limit);
     let defaultLimit = limit ? limit : 10;
@@ -49,10 +50,10 @@ export class CompaniesService {
       .exec();
     return {
       meta: {
-        currentPage: currentPage, //trang hiện tại
+        current: currentPage, //trang hiện tại
         pageSize: size, //số lượng bản ghi đã lấy
-        totalPages: totalPages, //tổng số trang với điều kiện query
-        totalItems: totalItems // tổng số phần tử (số bản ghi)
+        pages: totalPages, //tổng số trang với điều kiện query
+        total: totalItems // tổng số phần tử (số bản ghi)
       },
       result //kết quả query
     }

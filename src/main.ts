@@ -33,10 +33,12 @@ async function bootstrap() { //bootstrap: khởi động
 
   //config cors
   app.enableCors({
-    "origin": "http://localhost:3000",
-    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-    "preflightContinue": false,
-    "optionsSuccessStatus": 204
+    //origin: "http://localhost:3000",
+    origin: true, // allow FE có cùng domain với server
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    credentials: true,
+    optionsSuccessStatus: 204
   })
   // app.use(function (req, res, next) { //this is midleware
 

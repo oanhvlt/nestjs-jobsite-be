@@ -72,8 +72,8 @@ export class UsersService {
 
   async findAll(currentPage: number, limit: number, qs: string) {
     const { filter, sort, projection, population } = aqp(qs);
-    delete filter.page;
-    delete filter.limit;
+    delete filter.current;
+    delete filter.pageSize;
 
     let offset = (currentPage - 1) * (limit);
     let defaultLimit = limit ? limit : 10;
@@ -90,10 +90,10 @@ export class UsersService {
       .exec();
     return {
       meta: {
-        currentPage: currentPage, //trang hiện tại
+        current: currentPage, //trang hiện tại
         pageSize: size, //số lượng bản ghi đã lấy
-        totalPages: totalPages, //tổng số trang với điều kiện query
-        totalItems: totalItems // tổng số phần tử (số bản ghi)
+        pages: totalPages, //tổng số trang với điều kiện query
+        total: totalItems // tổng số phần tử (số bản ghi)
       },
       result //kết quả query
     }
@@ -122,12 +122,12 @@ export class UsersService {
   }
 
   async update(updateUserDto: UpdateUserDto, @User() loginUser: IUser) {
-    const { name, email, age, gender, address, role, company } = updateUserDto;
+    //const email = updateUserDto.email;
     //check email is exist
-    const isExist = await this.userModel.findOne({ email });
-    if (isExist) {
-      throw new BadRequestException(`Email ${email} is exist.`);
-    }
+    // const isExist = await this.userModel.findOne({ email });
+    // if (isExist) {
+    //   throw new BadRequestException(`Email ${email} is exist.`);
+    // }
     let userUpdated = await this.userModel.updateOne({ _id: updateUserDto._id },
       {
         ...updateUserDto,
@@ -141,6 +141,9 @@ export class UsersService {
   }
 
   async remove(id: string, @User() loginUser: IUser) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return `Job not found`
+    }
     await this.userModel.updateOne(
       { _id: id },
       {
@@ -161,6 +164,10 @@ export class UsersService {
       { _id },
       { refreshToken }
     )
+  }
+
+  findUserToken = async (refreshToken: string) => {
+    return await this.userModel.findOne({ refreshToken })
   }
 
 }

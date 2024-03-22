@@ -25,7 +25,7 @@ export class CreateUserDto {
 
     @IsNumber({}, { message: 'age phải là number' })
     @IsNotEmpty({ message: 'age không được để trống' })
-    age: string;
+    age: number;
 
     @IsNotEmpty({ message: 'gender không được để trống' })
     gender: string;
@@ -57,7 +57,7 @@ export class RegisterUserDto {
     password: string;
 
     @IsNotEmpty({ message: 'age không được để trống' })
-    age: string;
+    age: number;
 
     @IsNotEmpty({ message: 'gender không được để trống' })
     gender: string;
