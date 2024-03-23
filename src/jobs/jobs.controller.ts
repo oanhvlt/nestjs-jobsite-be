@@ -19,15 +19,15 @@ export class JobsController {
   @Get()
   @Public()
   @ResponseMessage('Fetch jobs with pagination')
-  findAll(@Query("current") currentPage: string,
+  async findAll(@Query("current") currentPage: string,
     @Query("pageSize") limit: string,
     @Query() qs: string) {
-    return this.jobsService.findAll(+currentPage, +limit, qs);
+    return await this.jobsService.findAll(+currentPage, +limit, qs);
   }
 
   @Get(':id')
   @Public()
-  @ResponseMessage('Fetch jobs by id')
+  @ResponseMessage('Fetch job by id')
   async findOne(@Param('id') id: string) {
     return await this.jobsService.findOne(id);
   }

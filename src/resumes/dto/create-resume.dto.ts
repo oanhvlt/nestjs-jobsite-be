@@ -6,6 +6,7 @@ export class CreateResumeDto {
     email: string;
 
     @IsNotEmpty({ message: 'userId is not empty' })
+    @IsMongoId({ message: 'userId is a mongo id' })
     userId: mongoose.Schema.Types.ObjectId;
 
     @IsNotEmpty({ message: 'url is not empty' })
@@ -15,9 +16,11 @@ export class CreateResumeDto {
     status: string;
 
     @IsNotEmpty({ message: 'companyId is not empty' })
+    @IsMongoId({ message: 'companyId is a mongo id' })
     companyId: mongoose.Schema.Types.ObjectId;
 
     @IsNotEmpty({ message: 'jobId is not empty' })
+    @IsMongoId({ message: 'jobId is a mongo id' })
     jobId: mongoose.Schema.Types.ObjectId;
 }
 
