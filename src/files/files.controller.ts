@@ -1,30 +1,53 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, ParseFilePipeBuilder, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, ParseFilePipeBuilder, HttpStatus, UploadedFiles } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { CreateFileDto } from './dto/create-file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Public } from 'src/decorator/customize';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { Public, ResponseMessage } from 'src/decorator/customize';
 
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) { }
 
   @Public()
+  @Post('uploadMultiFile')
+  @ResponseMessage('Upload multi file')
+  @UseInterceptors(FilesInterceptor('files'))
+  uploadMultiFile(@UploadedFiles(
+    new ParseFilePipeBuilder()
+      .addFileTypeValidator({
+        fileType: /(image\/jpeg|image\/png|text\/plain|application\/pdf|application\/msword|application\/vnd.openxmlformats-officedocument.wordprocessingml.document)$/,
+      })
+      .addMaxSizeValidator({
+        maxSize: 100000 * 1024 //~100mb (maxSizeL byte)
+      })
+      .build({
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+      }),
+  ) files: Array<Express.Multer.File>) {
+    console.log(files);
+  }
+
+  //@Public()
   @Post('upload')
-  @UseInterceptors(FileInterceptor('CV'))
+  @ResponseMessage('Upload single file')
+  @UseInterceptors(FileInterceptor('fileUpload'))
   uploadFile(@UploadedFile(
     new ParseFilePipeBuilder()
       .addFileTypeValidator({
-        fileType: /(image\/jpeg|image\/png|text\/plain|application\/pdf)$/,
+        fileType: /(image\/jpeg|image\/png|text\/plain|application\/pdf|application\/msword|application\/vnd.openxmlformats-officedocument.wordprocessingml.document)$/,
       })
       .addMaxSizeValidator({
-        maxSize: 10000 * 1024 //10mb (maxSizeL byte)
+        maxSize: 10000 * 1024 //~10mb (maxSizeL byte)
       })
       .build({
         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
       }),
   ) file: Express.Multer.File) {
-    console.log(file);
+    //console.log(file);
+    return {
+      fileName: file.filename
+    }
   }
 
   @Get()

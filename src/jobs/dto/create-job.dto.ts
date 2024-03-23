@@ -9,9 +9,10 @@ import mongoose from 'mongoose';
 class Company {
     @IsNotEmpty()
     _id: mongoose.Schema.Types.ObjectId;
-
     @IsNotEmpty()
     name: string;
+    @IsNotEmpty()
+    logo: string;
 
 }
 
@@ -45,6 +46,9 @@ export class CreateJobDto {
     @IsNotEmpty({ message: 'description không được để trống' })
     description: string;
 
+    @IsNotEmpty({ message: 'location không được để trống' })
+    location: string;
+
     @IsNotEmpty({ message: 'startDate không được để trống' })
     @Transform(({ value }) => new Date(value))
     @IsDate({ message: 'startDate có định dạng Date' })
@@ -58,6 +62,8 @@ export class CreateJobDto {
     @IsNotEmpty({ message: 'isActive không được để trống' })
     @IsBoolean({ message: 'isActive có định dạng boolean' })
     isActive: boolean;
+
+
 
 }
 

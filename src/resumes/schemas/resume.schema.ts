@@ -1,45 +1,39 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-export type JobDocument = HydratedDocument<Job>;
+export type ResumeDocument = HydratedDocument<Resume>;
 
 @Schema({ timestamps: true })
-export class Job {
-    @Prop()
-    name: string;
+export class Resume {
+    @Prop({ required: true })
+    email: string;
+
+    @Prop({ required: true })
+    userId: mongoose.Schema.Types.ObjectId;;
 
     @Prop()
-    skill: string[];
-
-    @Prop({ type: Object })
-    company: {
-        _id: mongoose.Schema.Types.ObjectId;
-        name: string;
-        logo: string
-    };
+    url: string;
 
     @Prop()
-    salary: number;
+    status: string;
 
     @Prop()
-    quantity: number;
+    companyId: mongoose.Schema.Types.ObjectId;
 
     @Prop()
-    level: string;
+    jobId: mongoose.Schema.Types.ObjectId;
 
-    @Prop()
-    description: string;
+    @Prop({ type: mongoose.Schema.Types.Array })
+    history: {
+        status: string;
+        updatedAt: Date;
+        updatedBy: {
+            _id: mongoose.Schema.Types.ObjectId;
+            email: string;
+        }
+    }[];
 
-    @Prop()
-    location: string;
 
-    @Prop()
-    startDate: Date;
-    @Prop()
-    endDate: Date;
-
-    @Prop()
-    isActive: boolean;
 
     @Prop({ type: Object })
     createdBy: {
@@ -65,4 +59,4 @@ export class Job {
 
 }
 
-export const JobSchema = SchemaFactory.createForClass(Job);
+export const ResumeSchema = SchemaFactory.createForClass(Resume);
