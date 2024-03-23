@@ -15,26 +15,26 @@ export class CreateResumeDto {
     @IsNotEmpty({ message: 'status is not empty' })
     status: string;
 
-    @IsNotEmpty({ message: 'companyId is not empty' })
-    @IsMongoId({ message: 'companyId is a mongo id' })
-    companyId: mongoose.Schema.Types.ObjectId;
+    @IsNotEmpty({ message: 'company is not empty' })
+    @IsMongoId({ message: 'company is a mongo id' })
+    company: mongoose.Schema.Types.ObjectId;
 
-    @IsNotEmpty({ message: 'jobId is not empty' })
-    @IsMongoId({ message: 'jobId is a mongo id' })
-    jobId: mongoose.Schema.Types.ObjectId;
+    @IsNotEmpty({ message: 'job is not empty' })
+    @IsMongoId({ message: 'job is a mongo id' })
+    job: mongoose.Schema.Types.ObjectId;
 }
 
 export class CreateUserCvDto {
     @IsNotEmpty({ message: 'url is not empty' })
     url: string;
 
-    @IsNotEmpty({ message: 'companyId is not empty' })
-    @IsMongoId({ message: 'companyId is a mongo id' })
-    companyId: mongoose.Schema.Types.ObjectId;
+    @IsNotEmpty({ message: 'company is not empty' })
+    @IsMongoId({ message: 'company is a mongo id' })
+    company: mongoose.Schema.Types.ObjectId;
 
-    @IsNotEmpty({ message: 'jobId is not empty' })
-    @IsMongoId({ message: 'jobId is a mongo id' })
-    jobId: mongoose.Schema.Types.ObjectId;
+    @IsNotEmpty({ message: 'job is not empty' })
+    @IsMongoId({ message: 'job is a mongo id' })
+    job: mongoose.Schema.Types.ObjectId;
 }
 
 
