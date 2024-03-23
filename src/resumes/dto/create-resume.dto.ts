@@ -17,11 +17,11 @@ export class CreateResumeDto {
 
     @IsNotEmpty({ message: 'company is not empty' })
     @IsMongoId({ message: 'company is a mongo id' })
-    company: mongoose.Schema.Types.ObjectId;
+    companyId: mongoose.Schema.Types.ObjectId;
 
     @IsNotEmpty({ message: 'job is not empty' })
     @IsMongoId({ message: 'job is a mongo id' })
-    job: mongoose.Schema.Types.ObjectId;
+    jobId: mongoose.Schema.Types.ObjectId;
 }
 
 export class CreateUserCvDto {
@@ -29,12 +29,10 @@ export class CreateUserCvDto {
     url: string;
 
     @IsNotEmpty({ message: 'company is not empty' })
-    @IsMongoId({ message: 'company is a mongo id' })
-    company: mongoose.Schema.Types.ObjectId;
+    companyId: mongoose.Schema.Types.ObjectId;
 
     @IsNotEmpty({ message: 'job is not empty' })
-    @IsMongoId({ message: 'job is a mongo id' })
-    job: mongoose.Schema.Types.ObjectId;
+    jobId: mongoose.Schema.Types.ObjectId;
 }
 
 

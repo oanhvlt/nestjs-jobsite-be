@@ -79,9 +79,16 @@ export class ResumesService {
     if (!user._id) {
       throw new BadRequestException(`user id not found`);
     }
-    return await this.resumeModel.find({
-      userId: user._id
-    });
+    return await this.resumeModel.find({ userId: user._id })
+      .sort('-createdAt') //sort('-[field]') => sort theo [field] giảm dần
+      .populate([
+        {
+          path: 'companyId', select: { name: 1 }
+        },
+        {
+          path: 'jobId', select: { name: 1 }
+        },
+      ])
   }
 
   async updateStatus(_id: string, status: string, loginUser: IUser) {

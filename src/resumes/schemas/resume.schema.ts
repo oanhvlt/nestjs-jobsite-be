@@ -20,12 +20,10 @@ export class Resume {
     status: string;
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Company.name }) //or ref: "Company"
-    company: mongoose.Schema.Types.ObjectId; // can use this, không cần khai báo type ref
-    //company: Company
+    companyId: mongoose.Schema.Types.ObjectId; // can use this, không cần khai báo type ref
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Job.name })
-    job: mongoose.Schema.Types.ObjectId;
-    //job: Job
+    jobId: mongoose.Schema.Types.ObjectId;
 
     @Prop({ type: mongoose.Schema.Types.Array })
     history: {

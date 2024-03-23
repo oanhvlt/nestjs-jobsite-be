@@ -106,14 +106,14 @@ export class UsersService {
     }
     return await this.userModel.findOne({
       _id: id
-    }).select('-password'); // exclude password in result
-
+    }).select('-password') // exclude password in result
+      .populate({ path: 'role', select: { _id: 1, name: 1 } })
   }
 
   findOneByUsername(username: string) {
     return this.userModel.findOne({
       email: username
-    })
+    }).populate({ path: 'role', select: { name: 1, permissions: 1 } })
     //return `This action returns a #${id} user`;
   }
 
@@ -144,6 +144,11 @@ export class UsersService {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return `Job not found`
     }
+    const foundUser = await this.userModel.findById(id);
+    if (foundUser.email === 'admin@dev.com') {
+      throw new BadRequestException('Can not delete account admin');
+    }
+
     await this.userModel.updateOne(
       { _id: id },
       {
