@@ -23,8 +23,8 @@ export class CreateJobDto {
 
     @IsNotEmpty({ message: 'skills không được để trống' })
     @IsArray({ message: 'skills phải là mảng chuỗi' })
-    @IsString({ each: true, message: 'skill có định dạng string' })
-    skill: string[];
+    @IsString({ each: true, message: 'skills có định dạng string' })
+    skills: string[];
 
     //validate 1 object
     @IsNotEmptyObject()

@@ -13,5 +13,6 @@ import { Role, RoleSchema } from './schemas/role.schema';
       schema: RoleSchema
     }
   ])],
+  exports: [RolesService]
 })
 export class RolesModule { }

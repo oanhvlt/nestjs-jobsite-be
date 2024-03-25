@@ -8,10 +8,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './passport/jwt.strategy';
 import ms from 'ms';
 import { AuthController } from './auth.controller';
+import { RolesModule } from 'src/roles/roles.module';
 
 @Module({
   imports: [
-    UsersModule, PassportModule,
+    RolesModule, //need to export RoleSevice at roles.module.ts
+    UsersModule,
+    PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

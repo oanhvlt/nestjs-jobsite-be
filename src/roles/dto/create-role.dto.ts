@@ -1,6 +1,5 @@
 import { IsArray, IsBoolean, IsMongoId, IsNotEmpty } from 'class-validator';
 import mongoose from 'mongoose';
-import { Permission } from 'src/permissions/schemas/permission.schema';
 
 export class CreateRoleDto {
     @IsNotEmpty({ message: 'Name is not empty' })

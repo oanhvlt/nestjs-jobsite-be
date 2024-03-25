@@ -7,6 +7,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt.guard';
 import { TransformInterceptor } from './core/transform.interceptor';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 
 
 async function bootstrap() { //bootstrap: khởi động
@@ -26,7 +27,9 @@ async function bootstrap() { //bootstrap: khởi động
   app.setViewEngine('ejs');
 
   //before run app, call validation
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true // update khong bị mất dữ liệu
+  }));
 
   // config cookies
   app.use(cookieParser());
@@ -40,24 +43,6 @@ async function bootstrap() { //bootstrap: khởi động
     credentials: true,
     optionsSuccessStatus: 204
   })
-  // app.use(function (req, res, next) { //this is midleware
-
-  //   // Website you wish to allow to connect
-  //   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-
-  //   // Request methods you wish to allow
-  //   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-  //   // Request headers you wish to allow
-  //   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-  //   // Set to true if you need the website to include cookies in the requests sent
-  //   // to the API (e.g. in case you use sessions)
-  //   res.setHeader('Access-Control-Allow-Credentials', true);
-
-  //   // Pass to next layer of middleware
-  //   next();
-  // });
 
   //config version api
   app.setGlobalPrefix('api');//// replace default prefix: 'v' => api/v
@@ -65,6 +50,9 @@ async function bootstrap() { //bootstrap: khởi động
     type: VersioningType.URI,
     defaultVersion: ['1', '2']
   });
+
+  //config helmet
+  app.use(helmet())
 
   //await app.listen(process.env.PORT);
   await app.listen(configService.get('PORT')); //or  configService.get<string>('PORT')

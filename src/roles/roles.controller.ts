@@ -31,7 +31,7 @@ export class RolesController {
   }
 
   @Patch(':id')
-  @ResponseMessage('Update status role')
+  @ResponseMessage('Update role')
   update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto, @User() loginUser: IUser) {
     return this.rolesService.update(id, updateRoleDto, loginUser);
   }

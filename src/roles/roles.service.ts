@@ -7,6 +7,7 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import { Role, RoleDocument } from './schemas/role.schema';
+import { ADMIN_ROLE } from 'src/databases/sample';
 
 @Injectable()
 export class RolesService {
@@ -100,7 +101,7 @@ export class RolesService {
       throw new BadRequestException(`permission not found`);
     }
     const foundRole = await this.roleModel.findById(_id);
-    if (foundRole.name === 'ADMIN') {
+    if (foundRole.name === ADMIN_ROLE) {
       throw new BadRequestException('Can not delete rold ADMIN');
     }
     await this.roleModel.updateOne({ _id },

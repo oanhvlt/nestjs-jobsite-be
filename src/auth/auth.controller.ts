@@ -5,19 +5,24 @@ import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { Request, Response } from 'express';
 import { IUser } from 'src/users/users.interface';
+import { RolesService } from 'src/roles/roles.service';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 
 
 @Controller('auth') // route /auth
 export class AuthController {
     constructor(
-        private authService: AuthService
+        private authService: AuthService,
+        private roldService: RolesService
     ) { }
 
     //return token when user login, http://localhost:8000/api/v1/auth/login
 
     @Public() // define at customize.ts to ignore JWT
     @UseGuards(LocalAuthGuard)  //Passport Guard: https://docs.nestjs.com/recipes/passport
+    @UseGuards(ThrottlerGuard)
+    @Throttle(3, 60)
     @ResponseMessage('User Login')
     @Post('login')
     handleLogin(@Req() req, @Res({ passthrough: true }) res: Response) {
@@ -35,7 +40,9 @@ export class AuthController {
     //api Get Account (F5 Refresh at client) : http://localhost:8000/api/v1/auth/account
     @ResponseMessage('Get user information')
     @Get('account')
-    handleGetAccount(@User() user: IUser) { //req.user
+    async handleGetAccount(@User() user: IUser) { //req.user
+        const temp = await this.roldService.findOne(user.role._id) as any;
+        user.permissions = temp.permissions;
         return { user }
     }
 

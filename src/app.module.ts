@@ -13,12 +13,20 @@ import { ResumesModule } from './resumes/resumes.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { RolesModule } from './roles/roles.module';
 import { DatabasesModule } from './databases/databases.module';
+import { SubscribersModule } from './subscribers/subscribers.module';
+import { MailModule } from './mail/mail.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   ////copy connection string in mongoDB compass 
   imports: [
     //MongooseModule.forRoot('mongodb+srv://ovu1024:O%40nh1024@cluster0.birnesc.mongodb.net/'),
-
+    ThrottlerModule.forRoot({
+      ttl: 60, //thời gian sống mặc định 60s
+      limit: 10, //giới hạn 10 lần
+    }),
+    ScheduleModule.forRoot(),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => ({
@@ -42,6 +50,8 @@ import { DatabasesModule } from './databases/databases.module';
     PermissionsModule,
     RolesModule,
     DatabasesModule,
+    SubscribersModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [

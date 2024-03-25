@@ -9,12 +9,18 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from './users.interface';
 import { User } from 'src/decorator/customize';
 import aqp from 'api-query-params';
+import { Role, RoleDocument } from 'src/roles/schemas/role.schema';
+import { USER_ROLE } from 'src/databases/sample';
 
 @Injectable() // ~ Pipe (midleware): https://docs.nestjs.com/pipes
 export class UsersService {
   constructor(
     @InjectModel(UserM.name) //name: id of model
-    private userModel: SoftDeleteModel<UserDocument>
+    private userModel: SoftDeleteModel<UserDocument>,
+
+    @InjectModel(Role.name) //name: id of model
+    private roleModel: SoftDeleteModel<RoleDocument>
+
   ) { }
 
   getHashPassword = (password: string) => {
@@ -31,6 +37,9 @@ export class UsersService {
       throw new BadRequestException(`Email ${email} is exist.`);
     }
 
+    //fetch user role
+    const userRole = await this.roleModel.findOne({ name: USER_ROLE });
+
     const hashPassword = this.getHashPassword(password);
     let user = await this.userModel.create({
       name,
@@ -39,6 +48,7 @@ export class UsersService {
       age,
       gender,
       address,
+      role: userRole?._id
     })
     return user;
   }
@@ -107,13 +117,13 @@ export class UsersService {
     return await this.userModel.findOne({
       _id: id
     }).select('-password') // exclude password in result
-      .populate({ path: 'role', select: { _id: 1, name: 1 } })
+      .populate({ path: 'role', select: { name: 1 } })
   }
 
   findOneByUsername(username: string) {
     return this.userModel.findOne({
       email: username
-    }).populate({ path: 'role', select: { name: 1, permissions: 1 } })
+    }).populate({ path: 'role', select: { name: 1 } })
     //return `This action returns a #${id} user`;
   }
 
@@ -145,7 +155,7 @@ export class UsersService {
       return `Job not found`
     }
     const foundUser = await this.userModel.findById(id);
-    if (foundUser.email === 'admin@dev.com') {
+    if (foundUser && foundUser.email === 'admin@dev.com') {
       throw new BadRequestException('Can not delete account admin');
     }
 
@@ -173,6 +183,7 @@ export class UsersService {
 
   findUserToken = async (refreshToken: string) => {
     return await this.userModel.findOne({ refreshToken })
+      .populate({ path: 'role', select: { name: 1 } })
   }
 
 }
