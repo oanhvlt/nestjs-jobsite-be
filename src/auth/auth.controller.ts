@@ -2,14 +2,15 @@ import { Body, Controller, Get, Post, Render, Req, Res, UseGuards } from '@nestj
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local.guard';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
-import { RegisterUserDto } from 'src/users/dto/create-user.dto';
+import { RegisterUserDto, UserLoginDto } from 'src/users/dto/create-user.dto';
 import { Request, Response } from 'express';
 import { IUser } from 'src/users/users.interface';
 import { RolesService } from 'src/roles/roles.service';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 
-
+@ApiTags('auth')
 @Controller('auth') // route /auth
 export class AuthController {
     constructor(
@@ -20,6 +21,7 @@ export class AuthController {
     //return token when user login, http://localhost:8000/api/v1/auth/login
 
     @Public() // define at customize.ts to ignore JWT
+    @ApiBody({ type: UserLoginDto, })
     @UseGuards(LocalAuthGuard)  //Passport Guard: https://docs.nestjs.com/recipes/passport
     @UseGuards(ThrottlerGuard)
     @Throttle(3, 60)

@@ -8,6 +8,7 @@ import { JwtAuthGuard } from './auth/jwt.guard';
 import { TransformInterceptor } from './core/transform.interceptor';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 
 async function bootstrap() { //bootstrap: khởi động
@@ -52,7 +53,37 @@ async function bootstrap() { //bootstrap: khởi động
   });
 
   //config helmet
-  app.use(helmet())
+  app.use(helmet());
+
+  //config swagger affter all configs
+  const config = new DocumentBuilder()
+    .setTitle('NestJS - jobsite APIs document')
+    .setDescription('All Modules APIs')
+    .setVersion('1.0')
+    //.addTag('cats')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'Bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+      },
+      'token',
+    )
+    .addSecurityRequirements('token')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document, {
+    //allow save token (Authorize) after refresh
+    swaggerOptions: {
+      persistAuthorization: true,
+      persistAuthorizationInSession: true,
+
+    }
+  });
+
+
+
 
   //await app.listen(process.env.PORT);
   await app.listen(configService.get('PORT')); //or  configService.get<string>('PORT')

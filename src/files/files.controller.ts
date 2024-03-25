@@ -1,10 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, ParseFilePipeBuilder, HttpStatus, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, ParseFilePipeBuilder, HttpStatus, UploadedFiles, UseFilters } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { CreateFileDto } from './dto/create-file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { Public, ResponseMessage } from 'src/decorator/customize';
+import { ApiTags } from '@nestjs/swagger';
+import { HttpExceptionFilter } from 'src/core/http-exception.filter';
 
+
+@ApiTags('files')
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) { }
@@ -31,24 +35,31 @@ export class FilesController {
   //@Public()
   @Post('upload')
   @ResponseMessage('Upload single file')
+  @UseFilters(new HttpExceptionFilter()) // custom message upload error
   @UseInterceptors(FileInterceptor('fileUpload'))
-  uploadFile(@UploadedFile(
-    new ParseFilePipeBuilder()
-      .addFileTypeValidator({
-        fileType: /(image\/jpeg|image\/png|text\/plain|application\/pdf|application\/msword|application\/vnd.openxmlformats-officedocument.wordprocessingml.document)$/,
-      })
-      .addMaxSizeValidator({
-        maxSize: 10000 * 1024 //~10mb (maxSizeL byte)
-      })
-      .build({
-        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
-      }),
-  ) file: Express.Multer.File) {
-    //console.log(file);
+  //code detail: multer.config.ts
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
     return {
       fileName: file.filename
     }
   }
+  // uploadFile(@UploadedFile(
+  //   new ParseFilePipeBuilder()
+  //     .addFileTypeValidator({
+  //       fileType: /(image\/jpeg|image\/png|text\/plain|application\/pdf|application\/msword|application\/vnd.openxmlformats-officedocument.wordprocessingml.document)$/,
+  //     })
+  //     .addMaxSizeValidator({
+  //       maxSize: 10000 * 1024 //~10mb (maxSizeL byte)
+  //     })
+  //     .build({
+  //       errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+  //     }),
+  // ) file: Express.Multer.File) {
+  //   //console.log(file);
+  //   return {
+  //     fileName: file.filename
+  //   }
+  // }
 
   @Get()
   findAll() {
